@@ -6,6 +6,7 @@ import io.codeovo.magmapay.objects.charges.ChargeResponse;
 import io.codeovo.mpcommands.MagmaPayCommands;
 import io.codeovo.mpcommands.utils.GeneralUtils;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -54,40 +55,50 @@ public class BuyCommand implements CommandExecutor {
                     p.sendMessage(magmaPayCommands.getCommandConfig().getPaymentInitiated()
                             .replace("<price>", formattedPrice));
 
-                    ChargeResponse chargeResponse = MagmaPay.getMagmaPayAPI().chargePlayer(new ChargeRequest(p,
-                            totalPrice, magmaPayCommands.getCommandConfig().getCurrencyCode(), true,
-                            stripeDescriptor, statementDescriptor, null));
+                    Bukkit.getScheduler().runTaskAsynchronously(magmaPayCommands, () -> {
+                        ChargeResponse chargeResponse = MagmaPay.getMagmaPayAPI().chargePlayer(new ChargeRequest(p,
+                                totalPrice, magmaPayCommands.getCommandConfig().getCurrencyCode(), true,
+                                stripeDescriptor, statementDescriptor, null));
 
-                    if (chargeResponse.getEarlyFailStatus() != null) {
-                        p.sendMessage(magmaPayCommands.getCommandConfig().getChargeFailed()
-                                .replace("<reason>", chargeResponse.getEarlyFailStatus().toString()));
-                        return true;
-                    }
+                        Bukkit.getScheduler().runTask(magmaPayCommands, () -> {
+                            boolean toContinue = true;
 
-                    if (chargeResponse.getStatus().equalsIgnoreCase("succeeded")) {
-                        p.sendMessage(magmaPayCommands.getCommandConfig().getChargeSuccessful());
+                            if (chargeResponse.getEarlyFailStatus() != null) {
+                                p.sendMessage(magmaPayCommands.getCommandConfig().getChargeFailed()
+                                        .replace("<reason>", chargeResponse.getEarlyFailStatus().toString()));
 
-                        ItemStack toDrop;
+                                toContinue = false;
+                            }
 
-                        if (strings[0].contains(":")) {
-                            String[] dataSplit = strings[0].split(":");
+                            if (toContinue) {
+                                if (chargeResponse.getStatus().equalsIgnoreCase("succeeded")) {
+                                    p.sendMessage(magmaPayCommands.getCommandConfig().getChargeSuccessful());
 
-                            toDrop = new ItemStack(Material.valueOf(dataSplit[0].toUpperCase()), quantity,
-                                    Short.valueOf(dataSplit[1]));
-                        } else {
-                            toDrop = new ItemStack(Material.valueOf(item), quantity);
-                        }
+                                    ItemStack toDrop;
 
-                        if (p.getInventory().firstEmpty() == -1) {
-                            p.getLocation().getWorld().dropItem(p.getEyeLocation(), toDrop);
-                        } else {
-                            p.getInventory().addItem(toDrop);
-                            p.updateInventory();
-                        }
-                    } else {
-                        p.sendMessage(magmaPayCommands.getCommandConfig().getChargeFailed()
-                                .replace("<reason>", chargeResponse.getFailureMessage()));
-                    }
+                                    if (strings[0].contains(":")) {
+                                        String[] dataSplit = strings[0].split(":");
+
+                                        toDrop = new ItemStack(Material.valueOf(dataSplit[0].toUpperCase()), quantity,
+                                                Short.valueOf(dataSplit[1]));
+                                    } else {
+                                        toDrop = new ItemStack(Material.valueOf(item), quantity);
+                                    }
+
+                                    if (p.getInventory().firstEmpty() == -1) {
+                                        p.getLocation().getWorld().dropItem(p.getEyeLocation(), toDrop);
+                                    } else {
+                                        p.getInventory().addItem(toDrop);
+                                        p.updateInventory();
+                                    }
+                                } else {
+                                    p.sendMessage(magmaPayCommands.getCommandConfig().getChargeFailed()
+                                            .replace("<reason>", chargeResponse.getFailureMessage()));
+                                }
+                            }
+                        });
+
+                    });
 
                     return true;
                 } else {
