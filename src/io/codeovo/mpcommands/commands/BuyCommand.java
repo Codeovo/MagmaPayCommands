@@ -58,6 +58,12 @@ public class BuyCommand implements CommandExecutor {
                             totalPrice, magmaPayCommands.getCommandConfig().getCurrencyCode(), true,
                             stripeDescriptor, statementDescriptor, null));
 
+                    if (chargeResponse.getEarlyFailStatus() != null) {
+                        p.sendMessage(magmaPayCommands.getCommandConfig().getChargeFailed()
+                                .replace("<reason>", chargeResponse.getEarlyFailStatus().toString()));
+                        return true;
+                    }
+
                     if (chargeResponse.getStatus().equalsIgnoreCase("succeeded")) {
                         p.sendMessage(magmaPayCommands.getCommandConfig().getChargeSuccessful());
 
@@ -79,13 +85,8 @@ public class BuyCommand implements CommandExecutor {
                             p.updateInventory();
                         }
                     } else {
-                        if (chargeResponse.getEarlyFailStatus() != null) {
-                            p.sendMessage(magmaPayCommands.getCommandConfig().getChargeFailed()
-                                    .replace("<reason>", chargeResponse.getEarlyFailStatus().toString()));
-                        } else {
-                            p.sendMessage(magmaPayCommands.getCommandConfig().getChargeFailed()
-                                    .replace("<reason>", chargeResponse.getFailureMessage()));
-                        }
+                        p.sendMessage(magmaPayCommands.getCommandConfig().getChargeFailed()
+                                .replace("<reason>", chargeResponse.getFailureMessage()));
                     }
 
                     return true;
