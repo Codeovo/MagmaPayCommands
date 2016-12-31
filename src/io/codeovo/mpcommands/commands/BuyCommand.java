@@ -6,10 +6,12 @@ import io.codeovo.magmapay.objects.charges.ChargeResponse;
 import io.codeovo.mpcommands.MagmaPayCommands;
 import io.codeovo.mpcommands.utils.GeneralUtils;
 
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public class BuyCommand implements CommandExecutor {
     private MagmaPayCommands magmaPayCommands;
@@ -32,7 +34,7 @@ public class BuyCommand implements CommandExecutor {
                         return true;
                     }
 
-                    String item = strings[1].toUpperCase();
+                    String item = strings[0].toUpperCase();
 
                     if (!magmaPayCommands.getPurchaseManager().itemExists(item)) {
                         p.sendMessage(magmaPayCommands.getCommandConfig().getInvalidItem());
@@ -59,7 +61,23 @@ public class BuyCommand implements CommandExecutor {
                     if (chargeResponse.getStatus().equalsIgnoreCase("succeeded")) {
                         p.sendMessage(magmaPayCommands.getCommandConfig().getChargeSuccessful());
 
-                        // GIVE ITEMS
+                        ItemStack toDrop;
+
+                        if (strings[0].contains(":")) {
+                            String[] dataSplit = strings[0].split(":");
+
+                            toDrop = new ItemStack(Material.valueOf(dataSplit[0].toUpperCase()), quantity,
+                                    Short.valueOf(dataSplit[1]));
+                        } else {
+                            toDrop = new ItemStack(Material.valueOf(item), quantity);
+                        }
+
+                        if (p.getInventory().firstEmpty() == -1) {
+                            p.getLocation().getWorld().dropItem(p.getEyeLocation(), toDrop);
+                        } else {
+                            p.getInventory().addItem(toDrop);
+                            p.updateInventory();
+                        }
                     } else {
                         if (chargeResponse.getEarlyFailStatus() != null) {
                             p.sendMessage(magmaPayCommands.getCommandConfig().getChargeFailed()

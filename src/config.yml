@@ -12,4 +12,5 @@ messages:
   no-permission: "&cYou do not have permission to use that command."
 items:
 - "STONE;2000"
+- "STONE:1;500"
 - "DIAMOND;1000"
