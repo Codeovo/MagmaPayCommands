@@ -13,6 +13,7 @@ public class MPCommandsConfig {
     private String stripeDescription;
     private String statementDescription;
 
+    private String paymentInitiated;
     private String chargeSuccessful;
     private String chargeFailed;
 
@@ -36,6 +37,7 @@ public class MPCommandsConfig {
         stripeDescription = config.getString("messages.stripe-description");
         statementDescription = config.getString("messages.statement-descriptor");
 
+        paymentInitiated = colourString(config.getString("messages.payment-initiated"));
         chargeSuccessful = colourString(config.getString("messages.charge-successful"));
         chargeFailed = colourString(config.getString("messages.charge-failed"));
 
@@ -52,6 +54,8 @@ public class MPCommandsConfig {
     public String getStripeDescription() { return stripeDescription; }
 
     public String getStatementDescription() { return statementDescription; }
+
+    public String getPaymentInitiated() { return paymentInitiated; }
 
     public String getChargeSuccessful() { return chargeSuccessful; }
 

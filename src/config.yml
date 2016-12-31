@@ -3,6 +3,7 @@ general:
 messages:
   stripe-description: "&8Server: &7<player>&8:&7<item>&8:&7<quantity>"
   statement-descriptor: "&8Server: &7<player>&8:&7<item>&8:&7<quantity>"
+  payment-initiated: "&e&lCharge created for $<price>, follow the on-screen prompts to complete."
   charge-successful: "&e&lCharge Successful! &8You will receive your items shortly."
   charge-failed: "&c&lCharge Failed! &8Reason: &7<reason>&8."
   not-number: "&cYou did not enter a valid quantity."
@@ -10,5 +11,5 @@ messages:
   incorrect-syntax: "&cYou used incorrect command syntax."
   no-permission: "&cYou do not have permission to use that command."
 items:
-- "STONE;2000;2"
-- "DIAMOND;1000;1"
+- "STONE;2000"
+- "DIAMOND;1000"

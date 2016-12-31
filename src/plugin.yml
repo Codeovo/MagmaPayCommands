@@ -3,3 +3,6 @@ author: Codeovo
 version: 1.0.0
 depend: [MagmaPay]
 main: io.codeovo.mpcommands.MagmaPayCommands
+
+commands:
+  mbuy:
