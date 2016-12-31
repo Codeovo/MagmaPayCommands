@@ -9,3 +9,6 @@ messages:
   invalid-item: "&cThe item you want to buy is invalid."
   incorrect-syntax: "&cYou used incorrect command syntax."
   no-permission: "&cYou do not have permission to use that command."
+items:
+- "STONE;2000;2"
+- "DIAMOND;1000;1"

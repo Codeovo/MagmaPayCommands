@@ -43,6 +43,8 @@ public class MPCommandsConfig {
         invalidItem = colourString(config.getString("messages.invalid-item"));
         incorrectSyntax = colourString(config.getString("messages.incorrect-syntax"));
         noPermission = colourString(config.getString("messages.no-permission"));
+
+        magmaPayCommands.getPurchaseManager().loadMap(config.getStringList("items"));
     }
 
     public String getCurrencyCode() { return currencyCode; }
