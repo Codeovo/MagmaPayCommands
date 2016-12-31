@@ -24,7 +24,7 @@ public class BuyCommand implements CommandExecutor {
         if (commandSender instanceof Player) {
             Player p = (Player) commandSender;
 
-            if (p.hasPermission("mpcommands.use")) {
+            if (p.hasPermission("mpcommands.use") || !magmaPayCommands.getCommandConfig().isUsePermissions()) {
                 if (strings.length == 2) {
                     int quantity;
 

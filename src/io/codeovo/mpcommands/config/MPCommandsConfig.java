@@ -8,6 +8,7 @@ public class MPCommandsConfig {
     private MagmaPayCommands magmaPayCommands;
     private FileConfiguration config;
 
+    private boolean usePermissions;
     private String currencyCode;
 
     private String stripeDescription;
@@ -32,6 +33,7 @@ public class MPCommandsConfig {
     }
 
     private void loadConfig() {
+        usePermissions = config.getBoolean("general.use-permissions");
         currencyCode = config.getString("general.currency");
 
         stripeDescription = config.getString("messages.stripe-description");
@@ -48,6 +50,8 @@ public class MPCommandsConfig {
 
         magmaPayCommands.getPurchaseManager().loadMap(config.getStringList("items"));
     }
+
+    public boolean isUsePermissions() { return usePermissions; }
 
     public String getCurrencyCode() { return currencyCode; }
 

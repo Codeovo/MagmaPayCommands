@@ -1,4 +1,5 @@
 general:
+  use-permissions: false
   currency: "USD"
 messages:
   stripe-description: "Server: <player>:<item>:<quantity>"

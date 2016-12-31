@@ -1,6 +1,6 @@
 name: MagmaPayCommands
 author: Codeovo
-version: 1.0.2
+version: 1.0.3
 depend: [MagmaPay]
 main: io.codeovo.mpcommands.MagmaPayCommands
 
